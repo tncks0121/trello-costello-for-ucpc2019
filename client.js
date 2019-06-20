@@ -7,11 +7,11 @@ var SIGMA_ICON = './sigma.svg';
 var getBadges = function(t){
   return t.card('id')
   .then(function(card){
-    return t.get('board', 'shared', 'difficulty-average')
+    return t.get('card', 'shared', 'difficulty-average')
     .then(function(difficultyAverage){
-      return t.get('board', 'shared', 'difficulty-min')
+      return t.get('card', 'shared', 'difficulty-min')
       .then(function(difficultyMin) {
-        return t.get('board', 'shared', 'difficulty-max')
+        return t.get('card', 'shared', 'difficulty-max')
         .then(function(difficultyMax) {
           console.log([difficultyAverage, difficultyMin, difficultyMax]);
           var badges = [];
