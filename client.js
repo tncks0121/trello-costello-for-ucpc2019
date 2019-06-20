@@ -280,7 +280,7 @@ var getButtons = function(t) {
                     newCosts[idx] = newCost;
                     console.log(newCosts);
                    
-                    t.set('card','shared','difficulty-average', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                    return t.set('card','shared','difficulty-average', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                       return accumulator + (currentValue);
                     }) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                       return accumulator + (currentValue ? 1 : 0);
