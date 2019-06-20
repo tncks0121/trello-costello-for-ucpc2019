@@ -91,7 +91,7 @@ var getBoardButtons = function(t) {
                 Object.keys(listSums).forEach(function(listId) {  
                   var listName = lists.find(function(list){return listId == list.id}).name;
                   columnEntries.push({
-                    text: listName + ': ' + parseFloat(listSums[listId]).toFixed(2).toLocaleString(undefined,{minimumFractionDigits:2})
+                    text: listName + ': ' + parseFloat(listSums[listId]).toFixed(0).toLocaleString(undefined,{minimumFractionDigits:2})
                   });
                 });
                 return t.popup({
@@ -119,7 +119,7 @@ var getBoardButtons = function(t) {
                 });
 
                 for (var listSum in listSums) {        
-                  columnEntries.push({text: listSum + ': ' + parseFloat(listSums[listSum]).toFixed(2).toLocaleString(undefined,{minimumFractionDigits:2})});
+                  columnEntries.push({text: listSum + ': ' + parseFloat(listSums[listSum]).toFixed(0).toLocaleString(undefined,{minimumFractionDigits:2})});
                 }
                 return t.popup({
                   title: 'Summary by Label',
@@ -272,7 +272,7 @@ var getButtons = function(t) {
           return t.popup({
             title: 'Set ' + costFields[idx] + '...',
             items: function(t, options) {
-              var newCost = parseFloat(options.search).toFixed(2)
+              var newCost = parseFloat(options.search).toFixed(0)
               var buttons = [{
                 text: !Number.isNaN(parseFloat(options.search)) ? 'Set ' + costFields[idx] + ' to ' + parseFloat(newCost).toLocaleString(undefined,{minimumFractionDigits:2}) : '(Enter a number to set ' + costFields[idx] + '.)',
                 callback: function(t) {
@@ -280,20 +280,21 @@ var getButtons = function(t) {
                     var newCosts = costs ? costs : Array(costFields.length).fill(false);
                     newCosts[idx] = newCost;
                     console.log(newCosts);
+                    var new_difficulty_average = ;
                    
-                    return t.set('card','shared','difficulty-average', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
-                      return accumulator + (currentValue);
-                    }) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                    return t.set('card','shared','difficulty-average', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                      return accumulator + (currentValue ? parseFloat(currentValue) : 0);
+                    }, 0) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                       return accumulator + (currentValue ? 1 : 0);
-                    })))
+                    }, 0))).toFixed(2))
                     .then(function() {
-                      return t.set('card','shared','difficulty-max', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
-                        return Math.max(accumulator, currentValue);
-                      }))
+                      return t.set('card','shared','difficulty-max', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                        return Math.max(accumulator, (currentValue ? parseFloat(currentValue) : 0))
+                      }, 0)).toFixed(0))
                       .then(function(){
-                        return t.set('card','shared','difficulty-min', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
-                          return Math.min(accumulator, currentValue);
-                        }))
+                        return t.set('card','shared','difficulty-min', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                          return Math.min(accumulator, (currentValue ? parseFloat(currentValue) : 1e9))
+                        }, 1e9)).toFixed(0))
                         .then(function() {
                           return t.set('card','shared','costs', newCosts)
                           .then(function() {
@@ -318,19 +319,19 @@ var getButtons = function(t) {
                     newCosts[idx] = false;
                     console.log(newCosts);
                     
-                    t.set('card','shared','difficulty-average', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
-                      return accumulator + (currentValue);
-                    }) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                    t.set('card','shared','difficulty-average', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                      return accumulator + (currentValue ? parseFloat(currentValue) : 0);
+                    }, 0) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                       return accumulator + (currentValue ? 1 : 0);
-                    })))
+                    }, 0))).toFixed(2))
                     .then(function() {
-                      return t.set('card','shared','difficulty-max', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
-                        return Math.max(accumulator, currentValue);
-                      }))
+                      return t.set('card','shared','difficulty-max', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                        return Math.max(accumulator, (currentValue ? parseFloat(currentValue) : 0))
+                      }, 0)).toFixed(0))
                       .then(function(){
-                        return t.set('card','shared','difficulty-min', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
-                          return Math.min(accumulator, currentValue);
-                        }))
+                        return t.set('card','shared','difficulty-min', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                          return Math.min(accumulator, (currentValue ? parseFloat(currentValue) : 1e9))
+                        }, 1e9)).toFixed(0))
                         .then(function() {
                           t.set('card','shared','costs', newCosts);
                         });
