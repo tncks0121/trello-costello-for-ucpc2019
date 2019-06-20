@@ -13,6 +13,7 @@ var getBadges = function(t){
       .then(function(difficultyMin) {
         return t.get('board', 'shared', 'difficulty-max')
         .then(function(difficultyMax) {
+          console.log([difficultyAverage, difficultyMin, difficultyMax]);
           var badges = [];
           if(difficultyAverage) badges.push({
             text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2})
