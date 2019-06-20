@@ -15,22 +15,37 @@ var getBadges = function(t){
         .then(function(difficultyMax) {
           return t.get('card', 'shared', 'difficulty-count')
           .then(function(difficultyCount) {
-            var badges = [];
-            if(difficultyCount) {
-              if(difficultyAverage) badges.push({
-                text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2})
+            return t.get('card', 'shared', 'costs')
+              .then(function(costs){
+              return t.get('board', 'shared', 'costFields')
+              .then(function(costFields){
+                if(!costFields) {
+                  return t.set('board', 'shared', 'costFields', ['박수찬'])
+                  .then(function() {
+                    return t.set('board', 'shared', 'costs', [false])
+                    .then(function() {
+                      return getBadges(t);
+                    });
+                  });
+                }
+                var badges = [];
+                if(difficultyCount) {
+                  if(difficultyAverage) badges.push({
+                    text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2})
+                  });
+                  if(difficultyMin) badges.push({
+                    text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:2})
+                  });
+                  if(difficultyMax) badges.push({
+                    text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:2})
+                  });
+                  if(difficultyCount) badges.push({
+                    text: 'count: ' + difficultyCount
+                  });
+                }
+                return badges;
               });
-              if(difficultyMin) badges.push({
-                text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:2})
-              });
-              if(difficultyMax) badges.push({
-                text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:2})
-              });
-              if(difficultyCount) badges.push({
-                text: 'count: ' + difficultyCount
-              });
-            }
-            return badges;
+            });
           });
         });
       });
