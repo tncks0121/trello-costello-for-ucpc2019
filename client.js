@@ -20,7 +20,7 @@ var getBadges = function(t){
               return t.get('board', 'shared', 'costFields')
               .then(function(costFields){
                 if(!costFields) {
-                  return t.set('board', 'shared', 'costFields', ['박수찬'])
+                  return t.set('board', 'shared', 'costFields', ['tncks0121'])
                   .then(function() {
                     return t.set('board', 'shared', 'costs', [false])
                     .then(function() {
