@@ -303,7 +303,7 @@ var getButtons = function(t) {
                           return t.set('card','shared','difficulty-count', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                             return accumulator + (currentValue ? 1 : 0);
                           }, 0))
-                          .then(function()) {
+                          .then(function() {
                             return t.set('card','shared','costs', newCosts)
                             .then(function() {
                               return t.set('board','shared','refresh',Math.random())
