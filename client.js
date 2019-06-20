@@ -307,7 +307,7 @@ var getButtons = function(t) {
                       return accumulator + (currentValue ? parseFloat(currentValue) : 0);
                     }, 0) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                       return accumulator + (currentValue ? 1 : 0);
-                    }, 0))).toFixed(2))
+                    }, 0))).toFixed(0))
                     .then(function() {
                       return t.set('card','shared','difficulty-max', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                         return Math.max(accumulator, (currentValue ? parseFloat(currentValue) : 0))
@@ -349,7 +349,7 @@ var getButtons = function(t) {
                       return accumulator + (currentValue ? parseFloat(currentValue) : 0);
                     }, 0) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                       return accumulator + (currentValue ? 1 : 0);
-                    }, 0))).toFixed(2))
+                    }, 0))).toFixed(0))
                     .then(function() {
                       return t.set('card','shared','difficulty-max', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                         return Math.max(accumulator, (currentValue ? parseFloat(currentValue) : 0))
