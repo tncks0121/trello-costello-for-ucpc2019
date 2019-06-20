@@ -278,10 +278,13 @@ var getButtons = function(t) {
                   if (newCost != 'NaN') {
                     var newCosts = costs ? costs : Array(costFields.length).fill(false);
                     newCosts[idx] = newCost;
-                    
-                    return t.set('card','shared','difficulty-average', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
-                      return accumulator + currentValue;
-                    }) / Math.max(1, newCosts.length))
+                    console.log(newCosts);
+                   
+                    t.set('card','shared','difficulty-average', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                      return accumulator + (currentValue);
+                    }) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                      return accumulator + (currentValue ? 1 : 0);
+                    })))
                     .then(function() {
                       return t.set('card','shared','difficulty-max', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                         return Math.max(accumulator, currentValue);
@@ -312,10 +315,13 @@ var getButtons = function(t) {
                   callback: function(t) {
                     var newCosts = costs ? costs : Array(costFields.length).fill(false);
                     newCosts[idx] = false;
+                    console.log(newCosts);
                     
                     t.set('card','shared','difficulty-average', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
-                      return accumulator + currentValue;
-                    }) / Math.max(1, newCosts.length))
+                      return accumulator + (currentValue);
+                    }) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                      return accumulator + (currentValue ? 1 : 0);
+                    })))
                     .then(function() {
                       return t.set('card','shared','difficulty-max', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                         return Math.max(accumulator, currentValue);
