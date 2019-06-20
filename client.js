@@ -358,9 +358,6 @@ var getButtons = function(t) {
 }
 
 TrelloPowerUp.initialize({
-  'board-buttons': function(t, options){
-    return getBoardButtons(t);
-  },
   'card-badges': function(t, options){
     return getBadges(t);
   },
