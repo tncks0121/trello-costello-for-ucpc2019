@@ -15,13 +15,13 @@ var getBadges = function(t){
         .then(function(difficultyMax) {
           var badges = [];
           if(difficultyAverage) badges.push({
-            text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2});
+            text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2})
           });
           if(difficultyMin) badges.push({
-            text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:2});
+            text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:2})
           });
           if(difficultyMax) badges.push({
-            text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:2});
+            text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:2})
           });
           return badges;
         });
