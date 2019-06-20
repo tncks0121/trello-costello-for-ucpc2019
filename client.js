@@ -14,7 +14,7 @@ var getBadges = function(t){
         return t.get('card', 'shared', 'difficulty-max')
         .then(function(difficultyMax) {
           return t.get('card', 'shared', 'difficulty-count')
-          .then(function(difficultyCount)) {
+          .then(function(difficultyCount) {
             var badges = [];
             if(difficultyAverage) badges.push({
               text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2})
