@@ -23,7 +23,7 @@ var getBadges = function(t){
         var badges = [];
         if (!costFields) {
           // create array
-          var newCostFields = ['Total Cost'];
+          var newCostFields = ['Average', 'Max', 'Min', 'Median'];
           return t.set('board', 'shared', 'costFields', newCostFields)
           .then(function() {
             return getBadges(t);
