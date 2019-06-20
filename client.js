@@ -5,76 +5,28 @@ var Promise = TrelloPowerUp.Promise;
 var SIGMA_ICON = './sigma.svg';
 
 var getBadges = function(t){
-  // we used to store costs in a board-level object, but 
-  // https://github.com/webrender/trello-costello/issues/11
-  // reported that the length of the field could exceed the 
-  // 4,000 character limit for trello data.  costs are now stored
-  // in card level objects, and this is here to convert old board-
-  // level costs to the new card-level objects
   return t.card('id')
-  .then(function(card) {
-  return t.get('board', 'shared', 'costs')
-  .then(function(oldCosts) {
-    var returnCosts = function () {
-      return t.get('card', 'shared', 'costs')
-      .then(function(costs){
-      return t.get('board', 'shared', 'costFields')
-      .then(function(costFields){
-        var badges = [];
-        if (!costFields) {
-          // create array
-          var newCostFields = ['Average', 'Max', 'Min', 'Median'];
-          return t.set('board', 'shared', 'costFields', newCostFields)
-          .then(function() {
-            return getBadges(t);
+  .then(function(card){
+    return t.get('board', 'shared', 'difficulty-average')
+    .then(function(difficultyAverage){
+      return t.get('board', 'shared', 'difficulty-min')
+      .then(function(difficultyMin) {
+        return t.get('board', 'shared', 'difficulty-max')
+        .then(function(difficultyMax) {
+          var badges = [];
+          if(difficultyAverage) badges.push({
+            text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2});
           });
-        }
-        if (costs) {
-          if(Array.isArray(costs)) {
-            costs.forEach(function(cost, idx){
-              if (cost) {
-                badges.push({
-                  text: costFields[idx] + ': ' + parseFloat(cost).toLocaleString(undefined,{minimumFractionDigits:2}),
-                  color: (cost == 0) ? 'red' : null
-                });
-              }
-            }); 
-            return badges;
-          } else {
-            // Initially, the card-level object used the cost title as the key,
-            // but I realized this would cause issues when renaming titles.
-            // costs are now stored in an array of objects, where the first object
-            // is always the default title.
-            var newCostArray = [];
-            newCostArray.push(costs['Total Cost']);
-            return t.set('card', 'shared', 'costs', newCostArray)
-            .then(function() {
-              return t.set('board','shared','refresh',Math.random())
-              .then(function() {
-                return getBadges(t);               
-              });
-            });
-          }
-        } else {
-          return [];
-        }
-      });
-      });
-    }
-    // oldcosts: these are legacy costs from v1 that were stored on the board-level object
-    if (oldCosts && oldCosts[card.id]) {
-      return t.set('card', 'shared', 'costs', [oldCosts[card.id]])
-      .then(function() {
-        delete oldCosts[card.id];
-        return t.set('board', 'shared', 'costs', oldCosts)
-        .then(function() {
-          return returnCosts();
+          if(difficultyMin) badges.push({
+            text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:2});
+          });
+          if(difficultyMax) badges.push({
+            text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:2});
+          });
+          return badges;
         });
-      })
-    } else {
-      return returnCosts();
-    }
-  });
+      });
+    });
   });
 };
 
@@ -310,6 +262,7 @@ var getButtons = function(t) {
   return t.get('card', 'shared', 'costs')
   .then(function(costs){
     var buttons = [];  
+    
     costFields.forEach(function(cost, idx){
       buttons.push({
         icon: SIGMA_ICON, 
@@ -325,13 +278,30 @@ var getButtons = function(t) {
                   if (newCost != 'NaN') {
                     var newCosts = costs ? costs : Array(costFields.length).fill(false);
                     newCosts[idx] = newCost;
-                    return t.set('card','shared','costs', newCosts)
+                    
+                    return t.set('card','shared','difficulty-average', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                      return accumulator + currentValue;
+                    }) / Math.max(1, newCosts.length))
                     .then(function() {
-                      return t.set('board','shared','refresh',Math.random())
-                      .then(function() {
-                        return t.closePopup();
+                      return t.set('card','shared','difficulty-max', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                        return Math.max(accumulator, currentValue);
+                      }))
+                      .then(function(){
+                        return t.set('card','shared','difficulty-min', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                          return Math.min(accumulator, currentValue);
+                        }))
+                        .then(function() {
+                          return t.set('card','shared','costs', newCosts)
+                          .then(function() {
+                            return t.set('board','shared','refresh',Math.random())
+                            .then(function() {
+                              return t.closePopup();
+                            });
+                          });
+                        });
                       });
                     });
+                    
                   }
                   return t.closePopup();
                 }
@@ -342,7 +312,24 @@ var getButtons = function(t) {
                   callback: function(t) {
                     var newCosts = costs ? costs : Array(costFields.length).fill(false);
                     newCosts[idx] = false;
-                    t.set('card','shared','costs', newCosts);
+                    
+                    t.set('card','shared','difficulty-average', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                      return accumulator + currentValue;
+                    }) / Math.max(1, newCosts.length))
+                    .then(function() {
+                      return t.set('card','shared','difficulty-max', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                        return Math.max(accumulator, currentValue);
+                      }))
+                      .then(function(){
+                        return t.set('card','shared','difficulty-min', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                          return Math.min(accumulator, currentValue);
+                        }))
+                        .then(function() {
+                          t.set('card','shared','costs', newCosts);
+                        });
+                      });
+                    });
+                    
                     return t.closePopup();
                   }
                 });
