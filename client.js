@@ -16,18 +16,20 @@ var getBadges = function(t){
           return t.get('card', 'shared', 'difficulty-count')
           .then(function(difficultyCount) {
             var badges = [];
-            if(difficultyAverage) badges.push({
-              text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2})
-            });
-            if(difficultyMin) badges.push({
-              text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:2})
-            });
-            if(difficultyMax) badges.push({
-              text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:2})
-            });
-            if(difficultyCount) badges.push({
-              text: 'count: ' + difficultyCount
-            });
+            if(difficultyCount) {
+              if(difficultyAverage) badges.push({
+                text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2})
+              });
+              if(difficultyMin) badges.push({
+                text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:2})
+              });
+              if(difficultyMax) badges.push({
+                text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:2})
+              });
+              if(difficultyCount) badges.push({
+                text: 'count: ' + difficultyCount
+              });
+            }
             return badges;
           });
         });
