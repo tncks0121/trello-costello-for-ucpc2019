@@ -13,18 +13,23 @@ var getBadges = function(t){
       .then(function(difficultyMin) {
         return t.get('card', 'shared', 'difficulty-max')
         .then(function(difficultyMax) {
-          console.log([difficultyAverage, difficultyMin, difficultyMax]);
-          var badges = [];
-          if(difficultyAverage) badges.push({
-            text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2})
+          return t.get('card', 'shared', 'difficulty-count')
+          .then(function(difficultyCount)) {
+            var badges = [];
+            if(difficultyAverage) badges.push({
+              text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2})
+            });
+            if(difficultyMin) badges.push({
+              text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:2})
+            });
+            if(difficultyMax) badges.push({
+              text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:2})
+            });
+            if(difficultyCount) badges.push({
+              text: 'count: ' + difficultyCount
+            });
+            return badges;
           });
-          if(difficultyMin) badges.push({
-            text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:2})
-          });
-          if(difficultyMax) badges.push({
-            text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:2})
-          });
-          return badges;
         });
       });
     });
@@ -295,13 +300,18 @@ var getButtons = function(t) {
                           return Math.min(accumulator, (currentValue ? parseFloat(currentValue) : 1e9))
                         }, 1e9)).toFixed(0))
                         .then(function() {
-                          return t.set('card','shared','costs', newCosts)
-                          .then(function() {
-                            return t.set('board','shared','refresh',Math.random())
+                          return t.set('card','shared','difficulty-count', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                            return accumulator + (currentValue ? 1 : 0);
+                          }, 0))
+                          .then(function()) {
+                            return t.set('card','shared','costs', newCosts)
                             .then(function() {
-                              return t.closePopup();
+                              return t.set('board','shared','refresh',Math.random())
+                              .then(function() {
+                                return t.closePopup();
+                              });
                             });
-                          });
+                          }
                         });
                       });
                     });
@@ -332,7 +342,12 @@ var getButtons = function(t) {
                           return Math.min(accumulator, (currentValue ? parseFloat(currentValue) : 1e9))
                         }, 1e9)).toFixed(0))
                         .then(function() {
-                          t.set('card','shared','costs', newCosts);
+                          return t.set('card','shared','difficulty-count', newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
+                            return accumulator + (currentValue ? 1 : 0);
+                          }, 0)).
+                          then(function() {
+                            t.set('card','shared','costs', newCosts);
+                          })
                         });
                       });
                     });
