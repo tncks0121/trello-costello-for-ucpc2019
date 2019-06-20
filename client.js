@@ -34,10 +34,10 @@ var getBadges = function(t){
                     text: 'average: ' + parseFloat(difficultyAverage).toLocaleString(undefined,{minimumFractionDigits:2})
                   });
                   if(difficultyMin) badges.push({
-                    text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:2})
+                    text: 'min: ' + parseFloat(difficultyMin).toLocaleString(undefined,{minimumFractionDigits:0})
                   });
                   if(difficultyMax) badges.push({
-                    text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:2})
+                    text: 'max: ' + parseFloat(difficultyMax).toLocaleString(undefined,{minimumFractionDigits:0})
                   });
                   if(difficultyCount) badges.push({
                     text: 'count: ' + difficultyCount
@@ -307,7 +307,7 @@ var getButtons = function(t) {
                       return accumulator + (currentValue ? parseFloat(currentValue) : 0);
                     }, 0) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                       return accumulator + (currentValue ? 1 : 0);
-                    }, 0))).toFixed(0))
+                    }, 0))).toFixed(2))
                     .then(function() {
                       return t.set('card','shared','difficulty-max', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                         return Math.max(accumulator, (currentValue ? parseFloat(currentValue) : 0))
@@ -349,7 +349,7 @@ var getButtons = function(t) {
                       return accumulator + (currentValue ? parseFloat(currentValue) : 0);
                     }, 0) / Math.max(1, newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                       return accumulator + (currentValue ? 1 : 0);
-                    }, 0))).toFixed(0))
+                    }, 0))).toFixed(2))
                     .then(function() {
                       return t.set('card','shared','difficulty-max', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                         return Math.max(accumulator, (currentValue ? parseFloat(currentValue) : 0))
