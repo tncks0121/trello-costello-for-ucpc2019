@@ -311,7 +311,7 @@ var getButtons = function(t) {
                                 return t.closePopup();
                               });
                             });
-                          }
+                          });
                         });
                       });
                     });
