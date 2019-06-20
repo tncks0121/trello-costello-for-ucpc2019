@@ -280,7 +280,6 @@ var getButtons = function(t) {
                     var newCosts = costs ? costs : Array(costFields.length).fill(false);
                     newCosts[idx] = newCost;
                     console.log(newCosts);
-                    var new_difficulty_average = ;
                    
                     return t.set('card','shared','difficulty-average', (newCosts.reduce(function(accumulator, currentValue, currentIndex, array) {
                       return accumulator + (currentValue ? parseFloat(currentValue) : 0);
